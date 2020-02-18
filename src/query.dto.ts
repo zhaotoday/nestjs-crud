@@ -21,4 +21,11 @@ export class QueryDto {
   })
   @ApiPropertyOptional()
   readonly limit?: number;
+
+  @ApiProperty({
+    description: "包含",
+    example: []
+  })
+  @ApiPropertyOptional()
+  readonly include?: any[];
 }

@@ -17,18 +17,25 @@ import { ApiOperation } from "@nestjs/swagger";
 export class CrudController {
   constructor(public repository: any) {}
 
+  public include: Object;
+
   @Get()
   @ApiOperation({
     summary: "获取列表"
   })
-  async findAll(
-    @Query() query: QueryDto,
-    @Res() res: Response
-  ): Promise<void> {
+  async findAll(@Query() query: QueryDto, @Res() res: Response): Promise<void> {
     res.json({
       data: {
         total: await this.repository.count(query),
-        items: await this.repository.findAll(query)
+        items: await this.repository.findAll({
+          ...query,
+          include: query.include[0]
+            ? query.include.map(item => ({
+              ...item,
+              model: this.include[item.model]
+            }))
+            : []
+        })
       }
     });
   }
@@ -37,8 +44,19 @@ export class CrudController {
   @ApiOperation({
     summary: "获取详情"
   })
-  async findByPk(@Param("id") id: string, @Res() res: Response): Promise<void> {
-    const ret = await this.repository.findByPk(id);
+  async findByPk(
+    @Param("id") id: string,
+    @Query() query: QueryDto,
+    @Res() res: Response
+  ): Promise<void> {
+    const ret = await this.repository.findByPk(id, {
+      include: query.include[0]
+        ? query.include.map(item => ({
+          ...item,
+          model: this.include[item.model]
+        }))
+        : []
+    });
 
     if (ret) {
       res.json({ data: ret });
