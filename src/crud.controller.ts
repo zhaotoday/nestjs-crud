@@ -7,9 +7,10 @@ import {
   Post,
   Put,
   Query,
+  Req,
   Res
 } from "@nestjs/common";
-import { Response } from "express";
+import { Request, Response } from "express";
 import { QueryDto } from "./query.dto";
 import { PlaceholderDto } from "./placeholder.dto";
 import { ApiOperation } from "@nestjs/swagger";
@@ -23,18 +24,25 @@ export class CrudController {
   @ApiOperation({
     summary: "获取列表"
   })
-  async findAll(@Query() query: QueryDto, @Res() res: Response): Promise<void> {
+  async findAll(
+    @Query() query: QueryDto,
+    @Req() req,
+    @Res() res: Response
+  ): Promise<void> {
+    const { include } = req.query;
+
     res.json({
       data: {
         total: await this.repository.count(query),
         items: await this.repository.findAll({
           ...query,
-          include: query.include && query.include[0]
-            ? query.include.map(item => ({
-              ...item,
-              model: this.include[item.model]
-            }))
-            : []
+          include:
+            include && include[0]
+              ? include.map(item => ({
+                  ...item,
+                  model: this.include[item.model]
+                }))
+              : []
         })
       }
     });
@@ -47,15 +55,18 @@ export class CrudController {
   async findByPk(
     @Param("id") id: string,
     @Query() query: QueryDto,
+    @Req() req: Request,
     @Res() res: Response
   ): Promise<void> {
+    const { include } = req.query;
     const ret = await this.repository.findByPk(id, {
-      include: query.include && query.include[0]
-        ? query.include.map(item => ({
-          ...item,
-          model: this.include[item.model]
-        }))
-        : []
+      include:
+        include && include[0]
+          ? include.map(item => ({
+              ...item,
+              model: this.include[item.model]
+            }))
+          : []
     });
 
     if (ret) {

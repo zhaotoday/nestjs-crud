@@ -13,19 +13,19 @@ export class QueryDto {
     example: "0"
   })
   @ApiPropertyOptional()
-  readonly offset?: number;
+  readonly offset?: string;
 
   @ApiProperty({
     description: "限量",
     example: "10"
   })
   @ApiPropertyOptional()
-  readonly limit?: number;
+  readonly limit?: string;
 
   @ApiProperty({
     description: "包含",
-    example: []
+    example: "[]"
   })
   @ApiPropertyOptional()
-  readonly include?: any[];
+  readonly include?: string;
 }
