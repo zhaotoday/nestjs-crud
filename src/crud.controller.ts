@@ -29,7 +29,7 @@ export class CrudController {
         total: await this.repository.count(query),
         items: await this.repository.findAll({
           ...query,
-          include: query.include[0]
+          include: query.include && query.include[0]
             ? query.include.map(item => ({
               ...item,
               model: this.include[item.model]
@@ -50,7 +50,7 @@ export class CrudController {
     @Res() res: Response
   ): Promise<void> {
     const ret = await this.repository.findByPk(id, {
-      include: query.include[0]
+      include: query.include && query.include[0]
         ? query.include.map(item => ({
           ...item,
           model: this.include[item.model]
