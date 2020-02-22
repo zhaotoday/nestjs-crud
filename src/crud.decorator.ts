@@ -21,6 +21,7 @@ function clonePropDecorators(from, to, name): void {
 export function Crud({
   Dto = PlaceholderDto,
   methods = [
+    ControllerMethod.FindALL,
     ControllerMethod.FindByPk,
     ControllerMethod.Create,
     ControllerMethod.Update,
