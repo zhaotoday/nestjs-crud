@@ -26,16 +26,16 @@ export class CrudController {
   })
   async findAll(
     @Query() query: QueryDto,
-    @Req() req,
+    @Req() req: Request,
     @Res() res: Response
   ): Promise<void> {
-    const { include } = req.query;
+    const { include, ...restQuery } = req.query;
 
     res.json({
       data: {
-        total: await this.repository.count(query),
+        total: await this.repository.count(restQuery),
         items: await this.repository.findAll({
-          ...query,
+          ...restQuery,
           include:
             include && include[0]
               ? include.map(item => ({

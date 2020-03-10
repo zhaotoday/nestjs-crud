@@ -3,7 +3,7 @@ import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 export class QueryDto {
   @ApiProperty({
     description: "查询条件",
-    example: JSON.stringify({ name: { $like: "%name%" } })
+    example: JSON.stringify({ name: { $like: "%%" } })
   })
   @ApiPropertyOptional()
   readonly where?: string;
