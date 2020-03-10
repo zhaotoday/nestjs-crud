@@ -29,7 +29,7 @@ export class CrudController {
     @Req() req: Request,
     @Res() res: Response
   ): Promise<void> {
-    const { include, ...restQuery } = req.query;
+    const { include, order, ...restQuery } = req.query;
 
     res.json({
       data: {
@@ -42,7 +42,8 @@ export class CrudController {
                   ...item,
                   model: this.include[item.model]
                 }))
-              : []
+              : [],
+          order: order[0] ? order : [["id", "DESC"]]
         })
       }
     });

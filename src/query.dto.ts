@@ -28,4 +28,10 @@ export class QueryDto {
   })
   @ApiPropertyOptional()
   readonly include?: string;
+
+  @ApiProperty({
+    description: "排序",
+    example: "[]"
+  })
+  readonly order?: string;
 }
