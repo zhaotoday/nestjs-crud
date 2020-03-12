@@ -43,7 +43,7 @@ export class CrudController {
                   model: this.include[item.model]
                 }))
               : [],
-          order: order[0] ? order : [["id", "DESC"]]
+          order: order && order[0] ? order : [["id", "DESC"]]
         })
       }
     });
