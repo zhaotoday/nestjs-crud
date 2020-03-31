@@ -20,6 +20,8 @@ export class CrudController {
 
   public include: Object;
 
+  public hasOrder: boolean = false;
+
   @Get()
   @ApiOperation({
     summary: "获取列表"
@@ -85,6 +87,10 @@ export class CrudController {
     @Body() body: PlaceholderDto,
     @Res() res: Response
   ): Promise<void> {
+    if (this.hasOrder) {
+      const maxId = await this.repository.max("id");
+      body.order = maxId + 1;
+    }
     res.json({ data: await this.repository.create(body) });
   }
 
@@ -111,7 +117,12 @@ export class CrudController {
     summary: "删除"
   })
   async destroy(@Param("id") id: string, @Res() res: Response): Promise<void> {
-    const ret = await this.repository.destroy({ where: { id } });
+    const ids = id.split(",");
+    const ret = await this.repository.destroy({
+      where: {
+        id: ids.length > 1 ? { $in: ids } : id
+      }
+    });
 
     if (ret) {
       res.json();
