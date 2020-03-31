@@ -22,6 +22,34 @@ export class CrudController {
 
   public hasOrder: boolean = false;
 
+  async findPrev({
+    id = "",
+    attributes = null,
+    where = {},
+    order = "order ASC"
+  } = {}) {
+    if (id) {
+      where = { ...where, id: { $gt: id } };
+    }
+    return (
+      (await this.repository.findAll({ attributes, where, order }))[0] || null
+    );
+  }
+
+  async findNext({
+    id = "",
+    attributes = null,
+    where = {},
+    order = "order DESC"
+  } = {}) {
+    if (id) {
+      where = { ...where, id: { $lt: id } };
+    }
+    return (
+      (await this.repository.findAll({ attributes, where, order }))[0] || null
+    );
+  }
+
   @Get()
   @ApiOperation({
     summary: "获取列表"
@@ -129,5 +157,54 @@ export class CrudController {
     } else {
       res.status(HttpStatus.NOT_FOUND).json();
     }
+  }
+
+  @Post(":id/actions/order")
+  async order(
+    @Param("id") id: string,
+    @Req() req: Request,
+    @Res() res: Response
+  ) {
+    const { where } = req.query;
+    const { action } = req.body;
+    const findByPkRes = await this.repository.findOne({ id });
+    const findPrevRes = await this.findPrev({
+      id,
+      where: {
+        ...where,
+        order: { $gt: findByPkRes.order }
+      }
+    });
+    const findNextRes = await this.findNext({
+      id,
+      where: {
+        ...where,
+        order: { $lt: findByPkRes.order }
+      }
+    });
+
+    if (action === "ToPrev" && findPrevRes[0]) {
+      await this.repository.update({
+        body: { order: findPrevRes.order },
+        where: { id }
+      });
+
+      await this.repository.update({
+        body: { order: findByPkRes.order },
+        where: { id: findPrevRes.id }
+      });
+    } else if (action === "ToNext" && findPrevRes[0]) {
+      await this.repository.update({
+        body: { order: findNextRes.order },
+        where: { id }
+      });
+
+      await this.repository.update({
+        body: { order: findByPkRes.order },
+        where: { id: findNextRes.id }
+      });
+    }
+
+    res.json();
   }
 }
