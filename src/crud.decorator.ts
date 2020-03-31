@@ -33,7 +33,7 @@ export function Crud({
     const Controller = target;
     const controller = target.prototype;
 
-    for (const method of methods) {
+    for (const method of ["findPrev", "findNext", ...methods]) {
       controller[method] = function(...args): Function {
         return crudController[method].apply(this, args);
       };
