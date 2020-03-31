@@ -14,6 +14,7 @@ import { Request, Response } from "express";
 import { QueryDto } from "./query.dto";
 import { PlaceholderDto } from "./placeholder.dto";
 import { ApiOperation } from "@nestjs/swagger";
+import { OrderAction } from "./order-action.enum";
 
 export class CrudController {
   constructor(public repository: any) {}
@@ -21,34 +22,6 @@ export class CrudController {
   public include: Object;
 
   public hasOrder: boolean = false;
-
-  async findPrev({
-    id = "",
-    attributes = null,
-    where = {},
-    order = "order ASC"
-  } = {}) {
-    if (id) {
-      where = { ...where, id: { $gt: id } };
-    }
-    return (
-      (await this.repository.findAll({ attributes, where, order }))[0] || null
-    );
-  }
-
-  async findNext({
-    id = "",
-    attributes = null,
-    where = {},
-    order = "order DESC"
-  } = {}) {
-    if (id) {
-      where = { ...where, id: { $lt: id } };
-    }
-    return (
-      (await this.repository.findAll({ attributes, where, order }))[0] || null
-    );
-  }
 
   @Get()
   @ApiOperation({
@@ -116,7 +89,7 @@ export class CrudController {
     @Res() res: Response
   ): Promise<void> {
     if (this.hasOrder) {
-      const maxId = await this.repository.max("id");
+      const maxId = (await this.repository.max("id")) || 1;
       body.order = maxId + 1;
     }
     res.json({ data: await this.repository.create(body) });
@@ -167,42 +140,49 @@ export class CrudController {
   ) {
     const { where } = req.query;
     const { action } = req.body;
-    const findByPkRes = await this.repository.findOne({ id });
-    const findPrevRes = await this.findPrev({
-      id,
+    const findByPkRes = await this.repository.findByPk(id);
+    const findPrevRes = await this.repository.findAll({
       where: {
         ...where,
         order: { $gt: findByPkRes.order }
-      }
+      },
+      order: [["order", "ASC"]],
+      limit: 1
     });
-    const findNextRes = await this.findNext({
-      id,
+
+    const findNextRes = await this.repository.findAll({
       where: {
         ...where,
         order: { $lt: findByPkRes.order }
-      }
+      },
+      order: [["order", "DESC"]],
+      limit: 1
     });
 
-    if (action === "ToPrev" && findPrevRes[0]) {
-      await this.repository.update({
-        body: { order: findPrevRes.order },
-        where: { id }
-      });
+    if (action === OrderAction.ToPrev && findPrevRes[0]) {
+      await this.repository.update(
+        { order: findPrevRes[0].order },
+        {
+          where: { id }
+        }
+      );
 
-      await this.repository.update({
-        body: { order: findByPkRes.order },
-        where: { id: findPrevRes.id }
-      });
-    } else if (action === "ToNext" && findPrevRes[0]) {
-      await this.repository.update({
-        body: { order: findNextRes.order },
-        where: { id }
-      });
+      await this.repository.update(
+        { order: findByPkRes.order },
+        {
+          where: { id: findPrevRes[0].id }
+        }
+      );
+    } else if (action === OrderAction.ToNext && findNextRes[0]) {
+      await this.repository.update(
+        { order: findNextRes[0].order },
+        { where: { id } }
+      );
 
-      await this.repository.update({
-        body: { order: findByPkRes.order },
-        where: { id: findNextRes.id }
-      });
+      await this.repository.update(
+        { order: findByPkRes.order },
+        { where: { id: findNextRes[0].id } }
+      );
     }
 
     res.json();

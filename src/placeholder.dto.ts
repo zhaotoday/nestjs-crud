@@ -1,3 +1,3 @@
 export class PlaceholderDto {
-  order?: number;
+  [propName: string]: any;
 }

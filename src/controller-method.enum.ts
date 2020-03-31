@@ -4,5 +4,6 @@ export enum ControllerMethod {
   FindByPk = "findByPk",
   Create = "create",
   Update = "update",
-  Destroy = "destroy"
+  Destroy = "destroy",
+  Order = "order"
 }

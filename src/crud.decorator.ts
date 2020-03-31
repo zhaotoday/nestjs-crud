@@ -26,14 +26,17 @@ export function Crud({
     ControllerMethod.Create,
     ControllerMethod.Update,
     ControllerMethod.Destroy
-  ]
+  ],
+  hasOrder = false
 }): Function {
   return function(target): void {
     const crudController = new CrudController(target.repository);
     const Controller = target;
     const controller = target.prototype;
 
-    for (const method of ["findPrev", "findNext", ...methods]) {
+    if (hasOrder) methods.push(ControllerMethod.Order);
+
+    for (const method of methods) {
       controller[method] = function(...args): Function {
         return crudController[method].apply(this, args);
       };
