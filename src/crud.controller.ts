@@ -43,7 +43,14 @@ export class CrudController {
             include && include[0]
               ? include.map(item => ({
                   ...item,
-                  model: this.include[item.model]
+                  model: this.include[item.model],
+                  include:
+                    item.include && item.include[0]
+                      ? item.include.map(item => ({
+                          ...item,
+                          model: this.include[item.model]
+                        }))
+                      : []
                 }))
               : [],
           order: order && order[0] ? order : [["id", "DESC"]]
@@ -68,7 +75,14 @@ export class CrudController {
         include && include[0]
           ? include.map(item => ({
               ...item,
-              model: this.include[item.model]
+              model: this.include[item.model],
+              include:
+                item.include && item.include[0]
+                  ? item.include.map(item => ({
+                      ...item,
+                      model: this.include[item.model]
+                    }))
+                  : []
             }))
           : []
     });
