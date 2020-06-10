@@ -32,13 +32,14 @@ export class CrudController {
     @Req() req: Request,
     @Res() res: Response
   ): Promise<void> {
-    const { include, order, ...restQuery } = req.query;
+    const { attributes = null, include, order, ...restQuery } = req.query;
 
     res.json({
       data: {
         total: await this.repository.count(restQuery),
         items: await this.repository.findAll({
           ...restQuery,
+          attributes,
           include:
             include && include[0]
               ? include.map(item => ({
@@ -69,13 +70,14 @@ export class CrudController {
     @Req() req: Request,
     @Res() res: Response
   ): Promise<void> {
-    const { include } = req.query;
+    const { attributes = null, include } = req.query;
     const ret = await this.repository.findByPk(id, {
       include:
         include && include[0]
           ? include.map(item => ({
               ...item,
               model: this.include[item.model],
+              attributes,
               include:
                 item.include && item.include[0]
                   ? item.include.map(item => ({
