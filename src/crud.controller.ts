@@ -16,6 +16,16 @@ import { PlaceholderDto } from "./placeholder.dto";
 import { ApiOperation } from "@nestjs/swagger";
 import { OrderAction } from "./order-action.enum";
 
+function getInclude(qInclude, cInclude) {
+  return qInclude && qInclude[0]
+    ? qInclude.map(item => ({
+        ...item,
+        model: cInclude[item.model],
+        include: item.include ? arguments.callee(item.include, cInclude) : []
+      }))
+    : [];
+}
+
 export class CrudController {
   constructor(public repository: any) {}
 
@@ -40,20 +50,7 @@ export class CrudController {
         items: await this.repository.findAll({
           ...restQuery,
           attributes,
-          include:
-            include && include[0]
-              ? include.map(item1 => ({
-                  ...item1,
-                  model: this.include[item1.model],
-                  include:
-                    item1.include && item1.include[0]
-                      ? item1.include.map(item2 => ({
-                          ...item2,
-                          model: this.include[item2.model]
-                        }))
-                      : []
-                }))
-              : [],
+          include: getInclude(include, this.include),
           order: order && order[0] ? order : [["id", "DESC"]]
         })
       }
@@ -72,21 +69,8 @@ export class CrudController {
   ): Promise<void> {
     const { attributes = null, include } = req.query;
     const ret = await this.repository.findByPk(id, {
-      include:
-        include && include[0]
-          ? include.map(item1 => ({
-              ...item1,
-              model: this.include[item1.model],
-              attributes,
-              include:
-                item1.include && item1.include[0]
-                  ? item1.include.map(item2 => ({
-                      ...item2,
-                      model: this.include[item2.model]
-                    }))
-                  : []
-            }))
-          : []
+      attributes,
+      include: getInclude(include, this.include)
     });
 
     if (ret) {
