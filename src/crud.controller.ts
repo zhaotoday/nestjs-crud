@@ -42,14 +42,14 @@ export class CrudController {
           attributes,
           include:
             include && include[0]
-              ? include.map(item => ({
-                  ...item,
-                  model: this.include[item.model],
+              ? include.map(item1 => ({
+                  ...item1,
+                  model: this.include[item1.model],
                   include:
-                    item.include && item.include[0]
-                      ? item.include.map(item => ({
-                          ...item,
-                          model: this.include[item.model]
+                    item1.include && item1.include[0]
+                      ? item1.include.map(item2 => ({
+                          ...item2,
+                          model: this.include[item2.model]
                         }))
                       : []
                 }))
@@ -74,15 +74,15 @@ export class CrudController {
     const ret = await this.repository.findByPk(id, {
       include:
         include && include[0]
-          ? include.map(item => ({
-              ...item,
-              model: this.include[item.model],
+          ? include.map(item1 => ({
+              ...item1,
+              model: this.include[item1.model],
               attributes,
               include:
-                item.include && item.include[0]
-                  ? item.include.map(item => ({
-                      ...item,
-                      model: this.include[item.model]
+                item1.include && item1.include[0]
+                  ? item1.include.map(item2 => ({
+                      ...item2,
+                      model: this.include[item2.model]
                     }))
                   : []
             }))
