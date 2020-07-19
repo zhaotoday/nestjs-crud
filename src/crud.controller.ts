@@ -21,7 +21,7 @@ function getInclude(qInclude, cInclude) {
     ? qInclude.map(item => ({
         ...item,
         model: cInclude[item.model],
-        include: item.include ? arguments.callee(item.include, cInclude) : []
+        include: item.include ? getInclude(item.include, cInclude) : []
       }))
     : [];
 }
