@@ -20,12 +20,14 @@ export class CrudQueryDto {
     description: "排序",
     example: []
   })
+  @ApiPropertyOptional()
   order?: Order;
 
   @ApiProperty({
     description: "字段列表",
     example: []
   })
+  @ApiPropertyOptional()
   attributes?: string[];
 
   @ApiProperty({
