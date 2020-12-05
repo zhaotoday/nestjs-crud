@@ -15,6 +15,7 @@ import { CrudQueryDto } from "./crud-query.dto";
 import { PlaceholderDto } from "./placeholder.dto";
 import { ApiOperation } from "@nestjs/swagger";
 import { CrudOrderAction } from "./crud-order-action.enum";
+import { Model } from "sequelize-typescript";
 
 function getInclude(include) {
   return include && include[0]
@@ -31,7 +32,7 @@ export class CrudController {
 
   public orderable: boolean = false;
 
-  constructor(private readonly repository: any) {}
+  constructor(private readonly repository: Model) {}
 
   private getInclude(include) {
     return include && include[0]
@@ -47,10 +48,9 @@ export class CrudController {
   @Get()
   async findAll(
     @Query() query: CrudQueryDto,
-    @Req() req: Request,
     @Res() res: Response
   ): Promise<void> {
-    const { attributes = null, include, order, ...restQuery } = query;
+    const { attributes, include, order, ...restQuery } = query;
 
     res.json({
       data: {
@@ -70,10 +70,9 @@ export class CrudController {
   async findByPk(
     @Param("id") id: number,
     @Query() query: CrudQueryDto,
-    @Req() req: Request,
     @Res() res: Response
   ): Promise<void> {
-    const { attributes = null, include } = req.query;
+    const { attributes, include } = query;
     const ret = await this.repository.findByPk(id, {
       attributes,
       include: getInclude.call(this, include)
@@ -117,15 +116,8 @@ export class CrudController {
 
   @ApiOperation({ summary: "删除" })
   @Delete(":id")
-  async destroy(@Param("id") id: string, @Res() res: Response): Promise<void> {
-    const ids = id.split(",");
-    const ret = await this.repository.destroy({
-      where: {
-        id: ids.length > 1 ? { $in: ids } : id
-      }
-    });
-
-    if (ret) {
+  async destroy(@Param("id") id: number, @Res() res: Response): Promise<void> {
+    if (await this.repository.destroy({ where: { id } })) {
       res.json();
     } else {
       res.status(HttpStatus.NOT_FOUND).json();
@@ -136,11 +128,12 @@ export class CrudController {
   @Post(":id/actions/order")
   async order(
     @Param("id") id: number,
-    @Req() req: Request,
+    @Query() query: CrudQueryDto,
+    @Body() body: PlaceholderDto,
     @Res() res: Response
   ) {
-    const { where } = req.query;
-    const { action } = req.body;
+    const { where } = query;
+    const { action } = body;
     const findByPkRes = await this.repository.findByPk(id);
     const findPrevRes = await this.repository.findAll({
       where: Object.assign(where, {
