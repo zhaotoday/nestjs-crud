@@ -1,13 +1,13 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { Includeable, Order, WhereOptions } from "sequelize";
 
-export class QueryDto {
+export class CrudQueryDto {
   @ApiProperty({
     description: "查询条件",
     example: {}
   })
   @ApiPropertyOptional()
-  where?: WhereOptions<any>;
+  where?: WhereOptions;
 
   @ApiProperty({
     description: "包含",

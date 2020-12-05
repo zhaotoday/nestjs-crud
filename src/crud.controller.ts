@@ -11,10 +11,10 @@ import {
   Res
 } from "@nestjs/common";
 import { Request, Response } from "express";
-import { QueryDto } from "./query.dto";
+import { CrudQueryDto } from "./crud-query.dto";
 import { PlaceholderDto } from "./placeholder.dto";
 import { ApiOperation } from "@nestjs/swagger";
-import { OrderAction } from "./order-action.enum";
+import { CrudOrderAction } from "./crud-order-action.enum";
 
 export class CrudController {
   public include: any;
@@ -36,7 +36,7 @@ export class CrudController {
   @ApiOperation({ summary: "获取列表" })
   @Get()
   async findAll(
-    @Query() query: QueryDto,
+    @Query() query: CrudQueryDto,
     @Req() req: Request,
     @Res() res: Response
   ): Promise<void> {
@@ -59,7 +59,7 @@ export class CrudController {
   @Get(":id")
   async findByPk(
     @Param("id") id: number,
-    @Query() query: QueryDto,
+    @Query() query: CrudQueryDto,
     @Req() req: Request,
     @Res() res: Response
   ): Promise<void> {
@@ -148,7 +148,7 @@ export class CrudController {
       limit: 1
     });
 
-    if (action === OrderAction.ToPrev && findPrevRes[0]) {
+    if (action === CrudOrderAction.ToPrev && findPrevRes[0]) {
       await this.repository.update(
         { order: findPrevRes[0].order },
         {
@@ -162,7 +162,7 @@ export class CrudController {
           where: { id: findPrevRes[0].id }
         }
       );
-    } else if (action === OrderAction.ToNext && findNextRes[0]) {
+    } else if (action === CrudOrderAction.ToNext && findNextRes[0]) {
       await this.repository.update(
         { order: findNextRes[0].order },
         { where: { id } }
