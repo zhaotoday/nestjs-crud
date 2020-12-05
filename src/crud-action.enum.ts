@@ -1,4 +1,4 @@
-export enum ControllerMethod {
+export enum CrudAction {
   All = "all",
   FindAll = "findAll",
   FindByPk = "findByPk",

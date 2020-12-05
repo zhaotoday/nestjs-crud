@@ -2,7 +2,7 @@ import { PARAMTYPES_METADATA } from "@nestjs/common/constants";
 import { get } from "lodash";
 import { PlaceholderDto } from "./placeholder.dto";
 import { CrudController } from "./crud.controller";
-import { ControllerMethod } from "./controller-method.enum";
+import { CrudAction } from "./crud-action.enum";
 
 function cloneDecorators(from, to): void {
   Reflect.getMetadataKeys(from).forEach(key => {
@@ -21,11 +21,11 @@ function clonePropDecorators(from, to, name): void {
 export function Crud({
   Dto = PlaceholderDto,
   methods = [
-    ControllerMethod.FindAll,
-    ControllerMethod.FindByPk,
-    ControllerMethod.Create,
-    ControllerMethod.Update,
-    ControllerMethod.Destroy
+    CrudAction.FindAll,
+    CrudAction.FindByPk,
+    CrudAction.Create,
+    CrudAction.Update,
+    CrudAction.Destroy
   ],
   orderable = false
 }): Function {
@@ -34,7 +34,7 @@ export function Crud({
     const Controller = target;
     const controller = target.prototype;
 
-    if (orderable) methods.push(ControllerMethod.Order);
+    if (orderable) methods.push(CrudAction.Order);
 
     for (const method of methods) {
       controller[method] = function(...args): Function {
