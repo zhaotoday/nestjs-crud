@@ -1,26 +1,27 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
+import { WhereOptions } from "sequelize";
 
 export class QueryDto {
   @ApiProperty({
     description: "查询条件",
-    example: JSON.stringify({ name: { $like: "%%" } })
+    example: {}
   })
   @ApiPropertyOptional()
-  readonly where?: string;
+  readonly where?: WhereOptions;
 
   @ApiProperty({
     description: "偏移量",
     example: "0"
   })
   @ApiPropertyOptional()
-  readonly offset?: string;
+  readonly offset?: number;
 
   @ApiProperty({
     description: "限量",
     example: "10"
   })
   @ApiPropertyOptional()
-  readonly limit?: string;
+  readonly limit?: number;
 
   @ApiProperty({
     description: "包含",

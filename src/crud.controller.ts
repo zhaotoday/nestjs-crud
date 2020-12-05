@@ -41,7 +41,7 @@ export class CrudController {
     @Req() req: Request,
     @Res() res: Response
   ): Promise<void> {
-    const { attributes = null, include, order, ...restQuery } = req.query;
+    const { attributes = null, include, order, ...restQuery } = query;
 
     res.json({
       data: {
@@ -56,12 +56,10 @@ export class CrudController {
     });
   }
 
-  @ApiOperation({
-    summary: "获取详情"
-  })
+  @ApiOperation({ summary: "获取详情" })
   @Get(":id")
   async findByPk(
-    @Param("id") id: string,
+    @Param("id") id: number,
     @Query() query: QueryDto,
     @Req() req: Request,
     @Res() res: Response
@@ -79,9 +77,7 @@ export class CrudController {
     }
   }
 
-  @ApiOperation({
-    summary: "新增"
-  })
+  @ApiOperation({ summary: "新增" })
   @Post()
   async create(
     @Body() body: PlaceholderDto,
@@ -94,12 +90,10 @@ export class CrudController {
     res.json({ data: await this.repository.create(body) });
   }
 
-  @ApiOperation({
-    summary: "编辑"
-  })
+  @ApiOperation({ summary: "编辑" })
   @Put(":id")
   async update(
-    @Param("id") id: string,
+    @Param("id") id: number,
     @Body() body: PlaceholderDto,
     @Res() res: Response
   ): Promise<void> {
@@ -112,9 +106,7 @@ export class CrudController {
     }
   }
 
-  @ApiOperation({
-    summary: "删除"
-  })
+  @ApiOperation({ summary: "删除" })
   @Delete(":id")
   async destroy(@Param("id") id: string, @Res() res: Response): Promise<void> {
     const ids = id.split(",");
@@ -131,12 +123,10 @@ export class CrudController {
     }
   }
 
-  @ApiOperation({
-    summary: "排序"
-  })
+  @ApiOperation({ summary: "排序" })
   @Post(":id/actions/order")
   async order(
-    @Param("id") id: string,
+    @Param("id") id: number,
     @Req() req: Request,
     @Res() res: Response
   ) {
