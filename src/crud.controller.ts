@@ -7,15 +7,13 @@ import {
   Post,
   Put,
   Query,
-  Req,
   Res
 } from "@nestjs/common";
-import { Request, Response } from "express";
+import { Response } from "express";
 import { CrudQueryDto } from "./crud-query.dto";
 import { PlaceholderDto } from "./placeholder.dto";
 import { ApiOperation } from "@nestjs/swagger";
 import { CrudOrderAction } from "./crud-order-action.enum";
-import { Model } from "sequelize-typescript";
 
 function getInclude(include) {
   return include && include[0]
@@ -28,11 +26,11 @@ function getInclude(include) {
 }
 
 export class CrudController {
-  public include: any;
+  public include;
 
   public orderable: boolean = false;
 
-  constructor(private readonly repository: Model) {}
+  constructor(private readonly repository) {}
 
   private getInclude(include) {
     return include && include[0]
