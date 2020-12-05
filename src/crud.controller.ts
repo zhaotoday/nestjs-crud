@@ -15,7 +15,6 @@ import { QueryDto } from "./query.dto";
 import { PlaceholderDto } from "./placeholder.dto";
 import { ApiOperation } from "@nestjs/swagger";
 import { OrderAction } from "./order-action.enum";
-import { Includeable } from "sequelize";
 
 export class CrudController {
   public include: any;
