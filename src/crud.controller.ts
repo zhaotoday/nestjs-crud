@@ -18,7 +18,7 @@ import { OrderAction } from "./order-action.enum";
 import { Includeable } from "sequelize";
 
 export class CrudController {
-  public include: Includeable[];
+  public include: any;
 
   public orderable: boolean = false;
 

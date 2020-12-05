@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
-import { WhereOptions } from "sequelize";
+import { Includeable, Order, WhereOptions } from "sequelize";
 
 export class QueryDto {
   @ApiProperty({
@@ -7,32 +7,38 @@ export class QueryDto {
     example: {}
   })
   @ApiPropertyOptional()
-  readonly where?: WhereOptions;
-
-  @ApiProperty({
-    description: "偏移量",
-    example: "0"
-  })
-  @ApiPropertyOptional()
-  readonly offset?: number;
-
-  @ApiProperty({
-    description: "限量",
-    example: "10"
-  })
-  @ApiPropertyOptional()
-  readonly limit?: number;
+  where?: WhereOptions<any>;
 
   @ApiProperty({
     description: "包含",
-    example: "[]"
+    example: []
   })
   @ApiPropertyOptional()
-  readonly include?: string;
+  include?: Includeable[];
 
   @ApiProperty({
     description: "排序",
-    example: "[]"
+    example: []
   })
-  readonly order?: string;
+  order?: Order;
+
+  @ApiProperty({
+    description: "字段列表",
+    example: []
+  })
+  attributes?: string[];
+
+  @ApiProperty({
+    description: "偏移量",
+    example: 0
+  })
+  @ApiPropertyOptional()
+  offset?: number;
+
+  @ApiProperty({
+    description: "限量",
+    example: 10
+  })
+  @ApiPropertyOptional()
+  limit?: number;
 }
