@@ -15,27 +15,26 @@ import { QueryDto } from "./query.dto";
 import { PlaceholderDto } from "./placeholder.dto";
 import { ApiOperation } from "@nestjs/swagger";
 import { OrderAction } from "./order-action.enum";
-
-function getInclude(qInclude, cInclude) {
-  return qInclude && qInclude[0]
-    ? qInclude.map(item => ({
-        ...item,
-        model: cInclude[item.model],
-        include: item.include ? getInclude(item.include, cInclude) : []
-      }))
-    : [];
-}
+import { Includeable } from "sequelize";
 
 export class CrudController {
-  constructor(public repository: any) {}
+  public include: Includeable[];
 
-  public include: Object;
+  public orderable: boolean = false;
 
-  public hasOrder: boolean = false;
+  constructor(private readonly repository: any) {}
 
-  @ApiOperation({
-    summary: "获取列表"
-  })
+  private getInclude(include) {
+    return include && include[0]
+      ? include.map(item => ({
+          ...item,
+          model: this.include[item.model],
+          include: item.include ? this.getInclude(include) : []
+        }))
+      : [];
+  }
+
+  @ApiOperation({ summary: "获取列表" })
   @Get()
   async findAll(
     @Query() query: QueryDto,
@@ -50,7 +49,7 @@ export class CrudController {
         items: await this.repository.findAll({
           ...restQuery,
           attributes,
-          include: getInclude(include, this.include),
+          include: this.getInclude(include),
           order: order && order[0] ? order : [["id", "DESC"]]
         })
       }
@@ -70,7 +69,7 @@ export class CrudController {
     const { attributes = null, include } = req.query;
     const ret = await this.repository.findByPk(id, {
       attributes,
-      include: getInclude(include, this.include)
+      include: this.getInclude(include)
     });
 
     if (ret) {
@@ -88,7 +87,7 @@ export class CrudController {
     @Body() body: PlaceholderDto,
     @Res() res: Response
   ): Promise<void> {
-    if (this.hasOrder) {
+    if (this.orderable) {
       const maxId = (await this.repository.max("id")) || 1;
       body.order = maxId + 1;
     }
@@ -145,19 +144,17 @@ export class CrudController {
     const { action } = req.body;
     const findByPkRes = await this.repository.findByPk(id);
     const findPrevRes = await this.repository.findAll({
-      where: {
-        ...where,
+      where: Object.assign(where, {
         order: { $gt: findByPkRes.order }
-      },
+      }),
       order: [["order", "ASC"]],
       limit: 1
     });
 
     const findNextRes = await this.repository.findAll({
-      where: {
-        ...where,
+      where: Object.assign(where, {
         order: { $lt: findByPkRes.order }
-      },
+      }),
       order: [["order", "DESC"]],
       limit: 1
     });

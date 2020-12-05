@@ -1,6 +1,6 @@
 export enum ControllerMethod {
   All = "all",
-  FindALL = "findAll",
+  FindAll = "findAll",
   FindByPk = "findByPk",
   Create = "create",
   Update = "update",

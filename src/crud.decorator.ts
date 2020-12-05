@@ -21,20 +21,20 @@ function clonePropDecorators(from, to, name): void {
 export function Crud({
   Dto = PlaceholderDto,
   methods = [
-    ControllerMethod.FindALL,
+    ControllerMethod.FindAll,
     ControllerMethod.FindByPk,
     ControllerMethod.Create,
     ControllerMethod.Update,
     ControllerMethod.Destroy
   ],
-  hasOrder = false
+  orderable = false
 }): Function {
   return function(target): void {
     const crudController = new CrudController(target.repository);
     const Controller = target;
     const controller = target.prototype;
 
-    if (hasOrder) methods.push(ControllerMethod.Order);
+    if (orderable) methods.push(ControllerMethod.Order);
 
     for (const method of methods) {
       controller[method] = function(...args): Function {
