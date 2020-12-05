@@ -16,6 +16,16 @@ import { PlaceholderDto } from "./placeholder.dto";
 import { ApiOperation } from "@nestjs/swagger";
 import { CrudOrderAction } from "./crud-order-action.enum";
 
+function getInclude(include) {
+  return include && include[0]
+    ? include.map(item => ({
+        ...item,
+        model: this.include[item.model],
+        include: item.include ? arguments.callee.call(this, include) : []
+      }))
+    : [];
+}
+
 export class CrudController {
   public include: any;
 
@@ -28,7 +38,7 @@ export class CrudController {
       ? include.map(item => ({
           ...item,
           model: this.include[item.model],
-          include: item.include ? this.getInclude(include) : []
+          include: item.include ? arguments.callee(include) : []
         }))
       : [];
   }
@@ -48,7 +58,7 @@ export class CrudController {
         items: await this.repository.findAll({
           ...restQuery,
           attributes,
-          include: this.getInclude(include),
+          include: getInclude.call(this, include),
           order: order && order[0] ? order : [["id", "DESC"]]
         })
       }
@@ -66,7 +76,7 @@ export class CrudController {
     const { attributes = null, include } = req.query;
     const ret = await this.repository.findByPk(id, {
       attributes,
-      include: this.getInclude(include)
+      include: getInclude.call(this, include)
     });
 
     if (ret) {
