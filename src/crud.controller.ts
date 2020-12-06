@@ -32,16 +32,6 @@ export class CrudController {
 
   constructor(private readonly repository) {}
 
-  private getInclude(include) {
-    return include && include[0]
-      ? include.map(item => ({
-          ...item,
-          model: this.include[item.model],
-          include: item.include ? arguments.callee(include) : []
-        }))
-      : [];
-  }
-
   @ApiOperation({ summary: "获取列表" })
   @Get()
   async findAll(
