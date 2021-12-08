@@ -80,7 +80,7 @@ export class CrudController {
     @Res() res: Response
   ): Promise<void> {
     if (this.orderable) {
-      const maxId = (await this.repository.max("id")) || 1;
+      const maxId = (await this.repository.max("id")) || 0;
       body.order = maxId + 1;
     }
     res.json({ data: await this.repository.create(body) });
