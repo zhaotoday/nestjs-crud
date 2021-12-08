@@ -76,12 +76,19 @@ export class CrudController {
   @ApiOperation({ summary: "新增" })
   @Post()
   async create(
+    @Query() query: CrudQueryDto,
     @Body() body: PlaceholderDto,
     @Res() res: Response
   ): Promise<void> {
+    const { where } = query;
+
     if (this.orderable) {
-      const maxId = (await this.repository.max("id")) || 0;
-      body.order = maxId + 1;
+      const findAllRes = await this.repository.findAll({
+        where: where || null,
+        limit: 1,
+      });
+
+      body.order = findAllRes && findAllRes[0] ? findAllRes[0].order + 1 : 1;
     }
     res.json({ data: await this.repository.create(body) });
   }
