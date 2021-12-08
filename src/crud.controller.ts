@@ -130,7 +130,6 @@ export class CrudController {
       order: [["order", "ASC"]],
       limit: 1,
     });
-
     const findNextRes = await this.repository.findAll({
       where: Object.assign(where, {
         order: { $lt: findByPkRes.order },
