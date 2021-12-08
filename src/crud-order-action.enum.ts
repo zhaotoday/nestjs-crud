@@ -1,4 +1,5 @@
 export enum CrudOrderAction {
   ToPrev = "ToPrev",
-  ToNext = "ToNext"
+  ToNext = "ToNext",
+  Update = "Update",
 }

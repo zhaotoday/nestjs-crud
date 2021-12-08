@@ -7,7 +7,7 @@ import {
   Post,
   Put,
   Query,
-  Res
+  Res,
 } from "@nestjs/common";
 import { Response } from "express";
 import { CrudQueryDto } from "./crud-query.dto";
@@ -17,10 +17,10 @@ import { CrudOrderAction } from "./crud-order-action.enum";
 
 function getInclude(include) {
   return include && include[0]
-    ? include.map(item => ({
+    ? include.map((item) => ({
         ...item,
         model: this.include[item.model],
-        include: item.include ? arguments.callee.call(this, include) : []
+        include: item.include ? arguments.callee.call(this, include) : [],
       }))
     : [];
 }
@@ -47,9 +47,9 @@ export class CrudController {
           ...restQuery,
           attributes,
           include: getInclude.call(this, include),
-          order: order && order[0] ? order : [["id", "DESC"]]
-        })
-      }
+          order: order && order[0] ? order : [["id", "DESC"]],
+        }),
+      },
     });
   }
 
@@ -63,7 +63,7 @@ export class CrudController {
     const { attributes, include } = query;
     const ret = await this.repository.findByPk(id, {
       attributes,
-      include: getInclude.call(this, include)
+      include: getInclude.call(this, include),
     });
 
     if (ret) {
@@ -121,48 +121,59 @@ export class CrudController {
     @Res() res: Response
   ) {
     const { where } = query;
-    const { action } = body;
+    const { action, order } = body;
     const findByPkRes = await this.repository.findByPk(id);
     const findPrevRes = await this.repository.findAll({
       where: Object.assign(where, {
-        order: { $gt: findByPkRes.order }
+        order: { $gt: findByPkRes.order },
       }),
       order: [["order", "ASC"]],
-      limit: 1
+      limit: 1,
     });
 
     const findNextRes = await this.repository.findAll({
       where: Object.assign(where, {
-        order: { $lt: findByPkRes.order }
+        order: { $lt: findByPkRes.order },
       }),
       order: [["order", "DESC"]],
-      limit: 1
+      limit: 1,
     });
 
-    if (action === CrudOrderAction.ToPrev && findPrevRes[0]) {
-      await this.repository.update(
-        { order: findPrevRes[0].order },
-        {
-          where: { id }
-        }
-      );
+    switch (action) {
+      case CrudOrderAction.ToPrev:
+        if (findPrevRes[0]) {
+          await this.repository.update(
+            { order: findPrevRes[0].order },
+            { where: { id } }
+          );
 
-      await this.repository.update(
-        { order: findByPkRes.order },
-        {
-          where: { id: findPrevRes[0].id }
+          await this.repository.update(
+            { order: findByPkRes.order },
+            { where: { id: findPrevRes[0].id } }
+          );
         }
-      );
-    } else if (action === CrudOrderAction.ToNext && findNextRes[0]) {
-      await this.repository.update(
-        { order: findNextRes[0].order },
-        { where: { id } }
-      );
+        break;
 
-      await this.repository.update(
-        { order: findByPkRes.order },
-        { where: { id: findNextRes[0].id } }
-      );
+      case CrudOrderAction.ToNext:
+        if (findNextRes[0]) {
+          await this.repository.update(
+            { order: findNextRes[0].order },
+            { where: { id } }
+          );
+
+          await this.repository.update(
+            { order: findByPkRes.order },
+            { where: { id: findNextRes[0].id } }
+          );
+        }
+        break;
+
+      case CrudOrderAction.Update:
+        await this.repository.update({ order }, { where: { id } });
+        break;
+
+      default:
+        break;
     }
 
     res.json();
