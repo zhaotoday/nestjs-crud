@@ -85,6 +85,7 @@ export class CrudController {
     if (this.orderable) {
       const findAllRes = await this.repository.findAll({
         where: where || null,
+        order: [["order", "DESC"]],
         limit: 1,
       });
 
