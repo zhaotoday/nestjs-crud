@@ -64,7 +64,7 @@ export class CrudController {
   ): Promise<void> {
     const { attributes, include } = query;
     const ret = await this.repository.findByPk(id, {
-      attributes,
+      attributes: attributes || this.attributes,
       include: getInclude.call(this, include),
     });
 
