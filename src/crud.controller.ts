@@ -28,6 +28,8 @@ function getInclude(include) {
 export class CrudController {
   public include;
 
+  public attributes;
+
   public orderable: boolean = false;
 
   constructor(private readonly repository) {}
@@ -45,7 +47,7 @@ export class CrudController {
         total: await this.repository.count(restQuery),
         items: await this.repository.findAll({
           ...restQuery,
-          attributes,
+          attributes: attributes || this.attributes,
           include: getInclude.call(this, include),
           order: order && order[0] ? order : [["id", "DESC"]],
         }),
