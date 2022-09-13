@@ -30,7 +30,7 @@ export class CrudController {
 
   public attributes;
 
-  public orderable: boolean = false;
+  public hasOrder: boolean = false;
 
   constructor(private readonly repository) {}
 
@@ -84,7 +84,7 @@ export class CrudController {
   ): Promise<void> {
     const { where } = query;
 
-    if (this.orderable) {
+    if (this.hasOrder) {
       const findAllRes = await this.repository.findAll({
         where: where || null,
         order: [["order", "DESC"]],

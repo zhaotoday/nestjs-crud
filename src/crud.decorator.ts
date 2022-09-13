@@ -27,14 +27,14 @@ export function Crud({
     CrudAction.Update,
     CrudAction.Destroy
   ],
-  orderable = false
+  hasOrder = false
 }): Function {
   return function(target): void {
     const crudController = new CrudController(target.repository);
     const Controller = target;
     const controller = target.prototype;
 
-    if (orderable) methods.push(CrudAction.Order);
+    if (hasOrder) methods.push(CrudAction.Order);
 
     for (const method of methods) {
       controller[method] = function(...args): Function {
