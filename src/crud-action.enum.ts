@@ -5,5 +5,6 @@ export enum CrudAction {
   Create = "create",
   Update = "update",
   Destroy = "destroy",
-  Order = "order"
+  Order = "order",
+  BulkDestroy = "bulkDestroy",
 }

@@ -5,14 +5,14 @@ import { CrudController } from "./crud.controller";
 import { CrudAction } from "./crud-action.enum";
 
 function cloneDecorators(from, to): void {
-  Reflect.getMetadataKeys(from).forEach(key => {
+  Reflect.getMetadataKeys(from).forEach((key) => {
     const value = Reflect.getMetadata(key, from);
     Reflect.defineMetadata(key, value, to);
   });
 }
 
 function clonePropDecorators(from, to, name): void {
-  Reflect.getMetadataKeys(from, name).forEach(key => {
+  Reflect.getMetadataKeys(from, name).forEach((key) => {
     const value = Reflect.getMetadata(key, from, name);
     Reflect.defineMetadata(key, value, to, name);
   });
@@ -25,24 +25,27 @@ export function Crud({
     CrudAction.FindByPk,
     CrudAction.Create,
     CrudAction.Update,
-    CrudAction.Destroy
+    CrudAction.Destroy,
   ],
-  hasOrder = false
+  hasOrder = false,
+  canBulkDestroy = false,
 }): Function {
-  return function(target): void {
+  return function (target): void {
     const crudController = new CrudController(target.repository);
     const Controller = target;
     const controller = target.prototype;
 
     if (hasOrder) methods.push(CrudAction.Order);
 
+    if (canBulkDestroy) methods.push(CrudAction.BulkDestroy);
+
     for (const method of methods) {
-      controller[method] = function(...args): Function {
+      controller[method] = function (...args): Function {
         return crudController[method].apply(this, args);
       };
 
       Object.defineProperty(controller[method], "name", {
-        value: method
+        value: method,
       });
 
       cloneDecorators(crudController, controller);
@@ -66,7 +69,7 @@ export function Crud({
               }
               return v;
             })
-          )
+          ),
         ],
         controller,
         method,
