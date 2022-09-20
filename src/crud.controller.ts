@@ -35,7 +35,9 @@ export class CrudController {
 
   constructor(private readonly repository) {}
 
-  @ApiOperation({ summary: "获取列表" })
+  @ApiOperation({
+    summary: "获取列表",
+  })
   @Get()
   async findAll(
     @Query() query: CrudQueryDto,
@@ -56,7 +58,9 @@ export class CrudController {
     });
   }
 
-  @ApiOperation({ summary: "获取详情" })
+  @ApiOperation({
+    summary: "获取详情",
+  })
   @Get(":id")
   async findByPk(
     @Param("id") id: number,
@@ -76,7 +80,9 @@ export class CrudController {
     }
   }
 
-  @ApiOperation({ summary: "新增" })
+  @ApiOperation({
+    summary: "新增",
+  })
   @Post()
   async create(
     @Query() query: CrudQueryDto,
@@ -97,7 +103,9 @@ export class CrudController {
     res.json({ data: await this.repository.create(body) });
   }
 
-  @ApiOperation({ summary: "编辑" })
+  @ApiOperation({
+    summary: "编辑",
+  })
   @Put(":id")
   async update(
     @Param("id") id: number,
@@ -113,7 +121,9 @@ export class CrudController {
     }
   }
 
-  @ApiOperation({ summary: "删除" })
+  @ApiOperation({
+    summary: "删除",
+  })
   @Delete(":id")
   async destroy(@Param("id") id: number, @Res() res: Response): Promise<void> {
     if (await this.repository.destroy({ where: { id } })) {
@@ -123,7 +133,9 @@ export class CrudController {
     }
   }
 
-  @ApiOperation({ summary: "排序" })
+  @ApiOperation({
+    summary: "排序",
+  })
   @Post(":id/actions/order")
   async order(
     @Param("id") id: number,
