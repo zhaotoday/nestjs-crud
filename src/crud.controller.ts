@@ -14,6 +14,7 @@ import { CrudQueryDto } from "./crud-query.dto";
 import { PlaceholderDto } from "./placeholder.dto";
 import { ApiOperation } from "@nestjs/swagger";
 import { CrudOrderAction } from "./crud-order-action.enum";
+import { Op } from "sequelize";
 
 function getInclude(include) {
   return include && include[0]
@@ -186,5 +187,27 @@ export class CrudController {
     }
 
     res.json();
+  }
+
+  @ApiOperation({
+    summary: "批量删除",
+  })
+  @Post("actions/bulkDestroy")
+  async bulkDestroy(
+    @Param("id") ids: number[],
+    @Body() body: PlaceholderDto,
+    @Res() res: Response
+  ) {
+    const destroyRes = await this.repository.destroy({
+      where: {
+        id: { [Op.in]: ids },
+      },
+    });
+
+    if (destroyRes) {
+      res.json();
+    } else {
+      res.status(HttpStatus.NOT_FOUND).json();
+    }
   }
 }
