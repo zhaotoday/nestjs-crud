@@ -29,7 +29,7 @@ export function Crud({
   ],
   hasOrder = false,
   canBulkDestroy = false,
-}): Function {
+}) {
   return function (target): void {
     const crudController = new CrudController(target.repository);
     const Controller = target;
@@ -40,7 +40,7 @@ export function Crud({
     if (canBulkDestroy) methods.push(CrudAction.BulkDestroy);
 
     for (const method of methods) {
-      controller[method] = function (...args): Function {
+      controller[method] = function (...args) {
         return crudController[method].apply(this, args);
       };
 

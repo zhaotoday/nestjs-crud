@@ -4,42 +4,42 @@ import { Includeable, Order, WhereOptions } from "sequelize";
 export class CrudQueryDto {
   @ApiProperty({
     description: "查询条件",
-    example: {}
+    example: {},
   })
   @ApiPropertyOptional()
   where?: WhereOptions;
 
   @ApiProperty({
     description: "包含",
-    example: []
+    example: [],
   })
   @ApiPropertyOptional()
   include?: Includeable[];
 
   @ApiProperty({
     description: "排序",
-    example: []
+    example: [],
   })
   @ApiPropertyOptional()
   order?: Order;
 
   @ApiProperty({
     description: "字段列表",
-    example: []
+    example: [],
   })
   @ApiPropertyOptional()
   attributes?: string[];
 
   @ApiProperty({
     description: "偏移量",
-    example: 0
+    example: 0,
   })
   @ApiPropertyOptional()
   offset?: number;
 
   @ApiProperty({
     description: "限量",
-    example: 10
+    example: 10,
   })
   @ApiPropertyOptional()
   limit?: number;
