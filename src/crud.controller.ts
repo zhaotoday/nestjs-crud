@@ -32,7 +32,7 @@ export class CrudController {
 
   public attributes;
 
-  public hasOrder: boolean = false;
+  public hasOrder: boolean;
 
   constructor(private readonly repository) {}
 
