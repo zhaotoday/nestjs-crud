@@ -53,7 +53,7 @@ export class CrudController {
           ...restQuery,
           attributes: attributes || this.attributes,
           include: getInclude.call(this, include),
-          order: order && order[0] ? order : [["id", "DESC"]],
+          order: order && order[0] ? order : [["createdAt", "DESC"]],
         }),
       },
     });
@@ -113,9 +113,15 @@ export class CrudController {
     @Body() body: PlaceholderDto,
     @Res() res: Response
   ): Promise<void> {
-    const ret = await this.repository.update(body, { where: { id } });
+    const findByPkRes = await this.repository.findByPk(id);
 
-    if (ret[0]) {
+    if (findByPkRes) {
+      Object.keys(body).forEach((key) => {
+        findByPkRes[key] = body[key];
+      });
+
+      await findByPkRes.save();
+
       res.json();
     } else {
       res.status(HttpStatus.NOT_FOUND).json();
