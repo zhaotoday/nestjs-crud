@@ -21,18 +21,6 @@ export class CrudPipe implements PipeTransform {
         return value;
       }
 
-      case "param": {
-        if (data === "id") {
-          if (isNaN(value)) {
-            throw new BadRequestException("id 参数错误");
-          }
-
-          return parseInt(value, 10);
-        }
-
-        return value;
-      }
-
       default:
         return value;
     }
