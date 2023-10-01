@@ -3,7 +3,6 @@
   "version": "3.1.15",
   "description": "Nest CRUD for RESTful APIs",
   "author": "zhaojintian",
-  "private": true,
   "license": "UNLICENSED",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
