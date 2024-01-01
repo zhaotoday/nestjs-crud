@@ -42,7 +42,7 @@ export class CrudController {
   @Get()
   async findAll(
     @Query() query: CrudQueryDto,
-    @Res() res: Response
+    @Res() res: Response,
   ): Promise<void> {
     const { attributes, include, order, ...restQuery } = query;
 
@@ -66,7 +66,7 @@ export class CrudController {
   async findByPk(
     @Param("id") id: number,
     @Query() query: CrudQueryDto,
-    @Res() res: Response
+    @Res() res: Response,
   ): Promise<void> {
     const { attributes, include } = query;
     const ret = await this.repository.findByPk(id, {
@@ -88,7 +88,7 @@ export class CrudController {
   async create(
     @Query() query: CrudQueryDto,
     @Body() body: PlaceholderDto,
-    @Res() res: Response
+    @Res() res: Response,
   ): Promise<void> {
     const { where } = query;
 
@@ -111,7 +111,7 @@ export class CrudController {
   async update(
     @Param("id") id: number,
     @Body() body: PlaceholderDto,
-    @Res() res: Response
+    @Res() res: Response,
   ): Promise<void> {
     const findByPkRes = await this.repository.findByPk(id);
 
@@ -148,7 +148,7 @@ export class CrudController {
     @Param("id") id: number,
     @Query() query: CrudQueryDto,
     @Body() body: PlaceholderDto,
-    @Res() res: Response
+    @Res() res: Response,
   ) {
     const { where } = query;
     const { action, order } = body;
@@ -173,12 +173,12 @@ export class CrudController {
         if (findPrevRes[0]) {
           await this.repository.update(
             { order: findPrevRes[0].order },
-            { where: { id } }
+            { where: { id } },
           );
 
           await this.repository.update(
             { order: findByPkRes.order },
-            { where: { id: findPrevRes[0].id } }
+            { where: { id: findPrevRes[0].id } },
           );
         }
         break;
@@ -187,12 +187,12 @@ export class CrudController {
         if (findNextRes[0]) {
           await this.repository.update(
             { order: findNextRes[0].order },
-            { where: { id } }
+            { where: { id } },
           );
 
           await this.repository.update(
             { order: findByPkRes.order },
-            { where: { id: findNextRes[0].id } }
+            { where: { id: findNextRes[0].id } },
           );
         }
         break;
