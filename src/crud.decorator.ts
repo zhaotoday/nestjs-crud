@@ -56,7 +56,7 @@ export function Crud({
       const types: [] = Reflect.getMetadata(
         PARAMTYPES_METADATA,
         controller,
-        method
+        method,
       );
 
       Reflect.decorate(
@@ -68,12 +68,12 @@ export function Crud({
                 return Dto;
               }
               return v;
-            })
+            }),
           ),
         ],
         controller,
         method,
-        Object.getOwnPropertyDescriptor(controller, method)
+        Object.getOwnPropertyDescriptor(controller, method),
       );
     }
   };

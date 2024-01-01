@@ -2,7 +2,7 @@ import {
   ArgumentMetadata,
   BadRequestException,
   Injectable,
-  PipeTransform
+  PipeTransform,
 } from "@nestjs/common";
 
 @Injectable()
@@ -10,11 +10,11 @@ export class CrudPipe implements PipeTransform {
   transform(value, { type, data }: ArgumentMetadata) {
     switch (type) {
       case "query": {
-        ["where", "include", "order", "attributes"].forEach(key => {
+        ["where", "include", "order", "attributes"].forEach((key) => {
           CrudPipe.toObj(key, value);
         });
 
-        ["offset", "limit"].forEach(key => {
+        ["offset", "limit"].forEach((key) => {
           CrudPipe.toInt(key, value);
         });
 
