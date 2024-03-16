@@ -1,10 +1,10 @@
 export enum CrudAction {
-  All = "all",
+  ALL = "all",
   FIND_ALL = "findAll",
   FIND_BY_PK = "findByPk",
-  Create = "create",
-  Update = "update",
-  Destroy = "destroy",
+  CREATE = "create",
+  UPDATE = "update",
+  DESTROY = "destroy",
   Order = "order",
   BulkDestroy = "bulkDestroy",
 }

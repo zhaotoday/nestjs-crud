@@ -197,7 +197,7 @@ export class CrudController {
         }
         break;
 
-      case CrudOrderAction.Update:
+      case CrudOrderAction.UPDATE:
         await this.repository.update({ order }, { where: { id } });
         break;
 

@@ -23,9 +23,9 @@ export function Crud({
   methods = [
     CrudAction.FIND_ALL,
     CrudAction.FIND_BY_PK,
-    CrudAction.Create,
-    CrudAction.Update,
-    CrudAction.Destroy,
+    CrudAction.CREATE,
+    CrudAction.UPDATE,
+    CrudAction.DESTROY,
   ],
   hasOrder = false,
   canBulkDestroy = false,
