@@ -21,8 +21,8 @@ function clonePropDecorators(from, to, name): void {
 export function Crud({
   entity = PlaceholderDto,
   methods = [
-    CrudAction.FindAll,
-    CrudAction.FindByPk,
+    CrudAction.FIND_ALL,
+    CrudAction.FIND_BY_PK,
     CrudAction.Create,
     CrudAction.Update,
     CrudAction.Destroy,
