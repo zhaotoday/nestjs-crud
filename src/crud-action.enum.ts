@@ -6,5 +6,5 @@ export enum CrudAction {
   UPDATE = "UPDATE",
   DESTROY = "DESTROY",
   ORDER = "ORDER",
-  BulkDestroy = "bulkDestroy",
+  BULK_DESTROY = "BULK_DESTROY",
 }

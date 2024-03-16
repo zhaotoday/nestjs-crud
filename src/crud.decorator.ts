@@ -37,7 +37,7 @@ export function Crud({
 
     if (hasOrder) methods.push(CrudAction.ORDER);
 
-    if (canBulkDestroy) methods.push(CrudAction.BulkDestroy);
+    if (canBulkDestroy) methods.push(CrudAction.BULK_DESTROY);
 
     for (const method of methods) {
       controller[method] = function (...args) {
