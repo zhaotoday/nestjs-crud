@@ -1,3 +1,4 @@
+import "reflect-metadata";
 import { PARAMTYPES_METADATA } from "@nestjs/common/constants";
 import { get } from "lodash";
 import { PlaceholderDto } from "./placeholder.dto";
@@ -19,7 +20,7 @@ function clonePropDecorators(from, to, name): void {
 }
 
 export function Crud({
-  Entity = PlaceholderDto,
+  entity = PlaceholderDto,
   methods = [
     CrudAction.FIND_ALL,
     CrudAction.FIND_BY_PK,
@@ -64,8 +65,8 @@ export function Crud({
           Reflect.metadata(
             PARAMTYPES_METADATA,
             types.map((v: any) => {
-              if (Entity && get(v, "name") === PlaceholderDto.name) {
-                return Entity;
+              if (entity && get(v, "name") === PlaceholderDto.name) {
+                return entity;
               }
               return v;
             }),

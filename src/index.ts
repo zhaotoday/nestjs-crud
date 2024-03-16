@@ -1,5 +1,3 @@
-import "reflect-metadata";
-
 export * from "./crud.controller";
 export * from "./crud.decorator";
 export * from "./crud.pipe";
