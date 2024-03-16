@@ -19,7 +19,7 @@ function clonePropDecorators(from, to, name): void {
 }
 
 export function Crud({
-  Dto = PlaceholderDto,
+  entity = PlaceholderDto,
   methods = [
     CrudAction.FindAll,
     CrudAction.FindByPk,
@@ -64,8 +64,8 @@ export function Crud({
           Reflect.metadata(
             PARAMTYPES_METADATA,
             types.map((v: any) => {
-              if (Dto && get(v, "name") === PlaceholderDto.name) {
-                return Dto;
+              if (entity && get(v, "name") === PlaceholderDto.name) {
+                return entity;
               }
               return v;
             }),
