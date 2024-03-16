@@ -1,7 +1,7 @@
 {
   "name": "nestjs-crud",
-  "version": "3.1.16",
-  "description": "Nest CRUD for RESTful APIs",
+  "version": "3.1.18",
+  "description": "Nestjs CRUD for RESTful APIs",
   "author": "zhaojintian",
   "license": "UNLICENSED",
   "main": "dist/index.js",
