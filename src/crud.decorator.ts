@@ -1,4 +1,3 @@
-import "reflect-metadata";
 import { PARAMTYPES_METADATA } from "@nestjs/common/constants";
 import { get } from "lodash";
 import { PlaceholderDto } from "./placeholder.dto";
