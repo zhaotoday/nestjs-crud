@@ -169,7 +169,7 @@ export class CrudController {
     });
 
     switch (action) {
-      case CrudOrderAction.ToPrev:
+      case CrudOrderAction.TO_PREV:
         if (findPrevRes[0]) {
           await this.repository.update(
             { order: findPrevRes[0].order },
@@ -183,7 +183,7 @@ export class CrudController {
         }
         break;
 
-      case CrudOrderAction.ToNext:
+      case CrudOrderAction.TO_NEXT:
         if (findNextRes[0]) {
           await this.repository.update(
             { order: findNextRes[0].order },
