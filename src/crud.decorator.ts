@@ -35,7 +35,7 @@ export function Crud({
     const Controller = target;
     const controller = target.prototype;
 
-    if (hasOrder) methods.push(CrudAction.Order);
+    if (hasOrder) methods.push(CrudAction.ORDER);
 
     if (canBulkDestroy) methods.push(CrudAction.BulkDestroy);
 
