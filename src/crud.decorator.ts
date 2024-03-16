@@ -19,7 +19,7 @@ function clonePropDecorators(from, to, name): void {
 }
 
 export function Crud({
-  entity = PlaceholderDto,
+  model = PlaceholderDto,
   methods = [
     CrudAction.FIND_ALL,
     CrudAction.FIND_BY_PK,
@@ -64,8 +64,8 @@ export function Crud({
           Reflect.metadata(
             PARAMTYPES_METADATA,
             types.map((v: any) => {
-              if (entity && get(v, "name") === PlaceholderDto.name) {
-                return entity;
+              if (model && get(v, "name") === PlaceholderDto.name) {
+                return model;
               }
               return v;
             }),
