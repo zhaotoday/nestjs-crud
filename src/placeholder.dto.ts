@@ -1,5 +1,3 @@
-import { Model } from "sequelize-typescript";
-
-export class PlaceholderDto extends Model {
+export class PlaceholderDto {
   [propName: string]: any;
 }
