@@ -7,9 +7,10 @@ import {
   Post,
   Put,
   Query,
+  Req,
   Res,
 } from "@nestjs/common";
-import { Response } from "express";
+import { Request, Response } from "express";
 import { CrudQueryDto } from "./crud-query.dto";
 import { PlaceholderDto } from "./placeholder.dto";
 import { ApiOperation } from "@nestjs/swagger";
@@ -34,6 +35,8 @@ export class CrudController {
 
   public hasOrder: boolean;
 
+  public filteredByUser: boolean;
+
   constructor(private readonly repository) {}
 
   @ApiOperation({
@@ -41,10 +44,21 @@ export class CrudController {
   })
   @Get()
   async findAll(
+    @Req() req: Request,
     @Query() query: CrudQueryDto,
     @Res() res: Response,
   ): Promise<void> {
     const { attributes, include, order, ...restQuery } = query;
+
+    if (this.filteredByUser) {
+      if (restQuery.where) {
+        restQuery.where.userId = req?.user?.id || null;
+      } else {
+        restQuery.where = {
+          userId: req?.user?.id || null,
+        };
+      }
+    }
 
     res.json({
       data: {
