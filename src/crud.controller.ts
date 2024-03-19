@@ -10,13 +10,14 @@ import {
   Req,
   Res,
 } from "@nestjs/common";
-import { Request, Response } from "express";
+import { Response } from "express";
 import { CrudQueryDto } from "./crud-query.dto";
 import { PlaceholderDto } from "./placeholder.dto";
 import { ApiOperation } from "@nestjs/swagger";
 import { CrudOrderAction } from "./crud-order-action.enum";
 import { Op } from "sequelize";
 import { CrudBulkDestroyDto } from "./crud-bulk-destroy.dto";
+import { JwtRequest } from "./types/jwt-request";
 
 function getInclude(include) {
   return include && include[0]
@@ -44,7 +45,7 @@ export class CrudController {
   })
   @Get()
   async findAll(
-    @Req() req: Request,
+    @Req() req: JwtRequest,
     @Query() query: CrudQueryDto,
     @Res() res: Response,
   ): Promise<void> {

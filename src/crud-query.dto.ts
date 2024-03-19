@@ -7,7 +7,7 @@ export class CrudQueryDto {
     example: {},
   })
   @ApiPropertyOptional()
-  where?: WhereOptions;
+  where?: WhereOptions | any;
 
   @ApiProperty({
     description: "包含",
