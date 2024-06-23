@@ -101,6 +101,7 @@ export class CrudController {
   })
   @Post()
   async create(
+    @Req() req: JwtRequest,
     @Query() query: CrudQueryDto,
     @Body() body: PlaceholderDto,
     @Res() res: Response,
@@ -113,6 +114,10 @@ export class CrudController {
         order: [["order", "DESC"]],
         limit: 1,
       });
+
+      if (this.filteredByUser) {
+        body.userId = req?.user?.id || null;
+      }
 
       body.order = findAllRes && findAllRes[0] ? findAllRes[0].order + 1 : 1;
     }
