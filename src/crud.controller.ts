@@ -108,16 +108,16 @@ export class CrudController {
   ): Promise<void> {
     const { where } = query;
 
+    if (this.filteredByUser) {
+      body.userId = req?.user?.id || null;
+    }
+
     if (this.hasOrder) {
       const findAllRes = await this.repository.findAll({
         where: where || null,
         order: [["order", "DESC"]],
         limit: 1,
       });
-
-      if (this.filteredByUser) {
-        body.userId = req?.user?.id || null;
-      }
 
       body.order = findAllRes && findAllRes[0] ? findAllRes[0].order + 1 : 1;
     }
