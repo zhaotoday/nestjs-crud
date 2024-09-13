@@ -19,16 +19,6 @@ import { Op } from "sequelize";
 import { CrudBulkDestroyDto } from "./crud-bulk-destroy.dto";
 import { JwtRequest } from "./types/jwt-request";
 
-function getInclude(include) {
-  return include && include[0]
-    ? include.map((item) => ({
-        ...item,
-        model: this.include[item.model],
-        include: item.include ? arguments.callee.call(this, include) : [],
-      }))
-    : [];
-}
-
 export class CrudController {
   public include;
 
@@ -67,11 +57,21 @@ export class CrudController {
         items: await this.repository.findAll({
           ...restQuery,
           attributes: attributes || this.attributes,
-          include: getInclude.call(this, include),
+          include: this.getInclude(include),
           order: order && order[0] ? order : [["createdAt", "DESC"]],
         }),
       },
     });
+  }
+
+  private getInclude(include) {
+    return include && include[0]
+      ? include.map((item) => ({
+          ...item,
+          model: this.include[item.model],
+          include: item.include ? this.getInclude(include) : [],
+        }))
+      : [];
   }
 
   @ApiOperation({
