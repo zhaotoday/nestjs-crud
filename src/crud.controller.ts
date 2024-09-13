@@ -19,6 +19,16 @@ import { Op } from "sequelize";
 import { CrudBulkDestroyDto } from "./crud-bulk-destroy.dto";
 import { JwtRequest } from "./types/jwt-request";
 
+function getInclude(that, include) {
+  return include?.[0]
+    ? include.map((item) => ({
+        ...item,
+        model: that.include[item.model],
+        include: item.include ? getInclude(that, item.include) : [],
+      }))
+    : [];
+}
+
 export class CrudController {
   public include;
 
@@ -57,21 +67,11 @@ export class CrudController {
         items: await this.repository.findAll({
           ...restQuery,
           attributes: attributes || this.attributes,
-          include: this.getInclude(include),
+          include: getInclude(this, include),
           order: order && order[0] ? order : [["createdAt", "DESC"]],
         }),
       },
     });
-  }
-
-  getInclude(include) {
-    return include?.[0]
-      ? include.map((item) => ({
-          ...item,
-          model: this.include[item.model],
-          include: item.include ? this.getInclude(item.include) : [],
-        }))
-      : [];
   }
 
   @ApiOperation({
@@ -86,7 +86,7 @@ export class CrudController {
     const { attributes, include } = query;
     const ret = await this.repository.findByPk(id, {
       attributes: attributes || this.attributes,
-      include: this.getInclude(include),
+      include: getInclude(this, include),
     });
 
     if (ret) {
