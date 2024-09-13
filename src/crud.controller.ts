@@ -64,7 +64,7 @@ export class CrudController {
     });
   }
 
-  private getInclude(include) {
+  getInclude(include) {
     return include?.[0]
       ? include.map((item) => ({
           ...item,
