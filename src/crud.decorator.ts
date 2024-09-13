@@ -44,6 +44,9 @@ export function Crud({
         return crudController[method].apply(this, args);
       };
 
+      controller.getInclude = (args) =>
+        crudController.getInclude.apply(this, args);
+
       Object.defineProperty(controller[method], "name", {
         value: method,
       });
