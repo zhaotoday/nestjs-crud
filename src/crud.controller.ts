@@ -65,7 +65,7 @@ export class CrudController {
   }
 
   private getInclude(include) {
-    return include && include[0]
+    return include?.[0]
       ? include.map((item) => ({
           ...item,
           model: this.include[item.model],
@@ -86,7 +86,7 @@ export class CrudController {
     const { attributes, include } = query;
     const ret = await this.repository.findByPk(id, {
       attributes: attributes || this.attributes,
-      include: this.getInclude(this, include),
+      include: this.getInclude(include),
     });
 
     if (ret) {
